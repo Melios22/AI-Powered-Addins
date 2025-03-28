@@ -183,11 +183,13 @@
 
     </style>
     <script>
+        // Get the selected text from the Google Docs
         function updateSelectedText() {
             google.script.run.withSuccessHandler(function(text) {
                 document.getElementById("inputText").value = text;
             }).getSelectedText();
         }
+        // Load the dropdown options
         function loadOptions() {
             google.script.run.withSuccessHandler(function(options) {
                 populateDropdown("targetLang", options.languages);
@@ -195,6 +197,7 @@
                 populateDropdown("styleSelect", options.styles);
             }).getOptions();
         }
+        // Populate the dropdown with the given items
         function populateDropdown(id, items) {
             var select = document.getElementById(id);
             select.innerHTML = "";
@@ -206,6 +209,7 @@
             });
         }
 
+        // ✅ Translates the text using the selected options
         function doTranslate() {
           var text = document.getElementById("inputText").value;
           var targetLang = document.getElementById("targetLang").value;
@@ -225,7 +229,7 @@
               console.log("Translation received:", translation);
               loadingIndicator.innerHTML = `<span style="color: green;">✅ Translation inserted!</span>`;
             })
-            .translateText(text, targetLang, model, style);
+            .translateText(text, targetLang, model, style); // Call the server-side function
         }
 
         // ✅ Clears text and hides the spinner

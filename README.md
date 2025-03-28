@@ -1,6 +1,5 @@
-<a id="readme-top"></a>
-
 # AI Translator Add-ins  
+<a id="readme-top"></a>
 
 <details>
     <summary>Table of Contents</summary>
@@ -24,7 +23,7 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
 ## ✨ Key Features <a id="features"></a>
 ✅ **Supports multiple languages**\
 ✅ **AI-powered translations** (Google Gemini & more)\
-✅ **Custom translation styles** (formal, casual, technical)\
+✅ **Custom translation styles** (e.g., formal, casual, technical)\
 ✅ **User-friendly sidebar interface**\
 ✅ **Customizable**
 
@@ -33,8 +32,8 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
 ### 🔧 Backend Setup  
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/yourusername/your-repo.git
-   cd your-repo/backend
+   git clone https://github.com/Melios22/AI-Translator-Add-ins.git
+   cd AI-Translator-Add-ins/backend
    ```
 
 2. **Install dependencies**  
@@ -52,7 +51,7 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
 
 3. **Start the FastAPI backend**  
    ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+   python main.py
    ```
 
 4. *(Optional)* **Expose API using ngrok**  

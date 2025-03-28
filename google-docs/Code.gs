@@ -12,7 +12,7 @@ function onOpen() {
 
 // Opens the sidebar
 function openSidebar() {
-  var html = HtmlService.createHtmlOutputFromFile("Sidebar")
+  var html = HtmlService.createHtmlOutputFromFile("sidebar")
     .setTitle("AI Translator");
   DocumentApp.getUi().showSidebar(html);
 }

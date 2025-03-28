@@ -1,5 +1,5 @@
 #  Google Docs Add-on - Setup Guide
-
+<a id="readme-top"></a>
 
 ## 🚀 Overview
 The **Google Docs AI Translator Add-on** seamless integrates into Google Docs, providing a quick and efficient way to translate selected text using AI-powered models.
@@ -26,6 +26,7 @@ var BASE_URL = "https://your-ngrok-url.ngrok.io"; // Change this
 - Back to Google Docs, there will be an option of `AI Translator` on the top menu. 
 - Click on it and then click on `Open Translator` to launch the sidebar.
 
+*<u>Note</u>:* On the first run, Google will ask for permission to access the Google Docs. Click on `Review Permissions` and then `Allow`.
 
 ## 🎨 Customization
 The sidebar UI can be customized by modifying the `sidebar.html` file. You can change the layout, styles, and functionality as needed.
@@ -39,3 +40,6 @@ Open the browser console (`Ctrl+Shift+J` in Chrome) to check for any errors.
 - **[Microsoft Word Add-in - Setup Guide](../microsoft-word/README.md)**
  - **[Main Project README](../README.md)**
 
+<p align="right">
+  <a href="#readme-top">⬆️ Back to top</a>
+</p>
