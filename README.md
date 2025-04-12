@@ -61,8 +61,8 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
 
 
 ## 📚 Integration Guides  <a id="integration-guides"></a>
-📌 **[Google Docs Add-on - Setup Guide](./google-docs/README.md)**  
-📌 **[Microsoft Word Add-in - Setup Guide](./microsoft-word/README.md)**  
+📌 **[Google Docs Add-on - Setup Guide](./google/README.md)**  
+📌 **[Microsoft Word Add-in - Setup Guide](./microsoft/README.md)**  
 
 
 ## 📖 How to use  <a id="how-to-use"></a>

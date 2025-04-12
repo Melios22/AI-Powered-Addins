@@ -46,7 +46,29 @@ class TranslationRequest(BaseModel):
     target_lang: str  # The target language for the translation
     model: str  # The name of the translation model to use
     style: str  # The desired style for the translation
-
+    
+    def check_language(self):
+        # self.target_lang = self.target_lang.lower()
+        if self.target_lang not in CONFIG["languages"].keys() and \
+            self.target_lang not in CONFIG["languages"].values():
+            return False
+        
+        if self.target_lang in CONFIG["languages"].keys():
+            self.target_lang = CONFIG["languages"][self.target_lang]
+        return True
+    
+    def check_model(self):
+        # self.model = self.model.lower()
+        if self.model not in CONFIG["models"].keys() and \
+            self.model not in CONFIG["models"].values():
+            return False
+        
+        if self.model in CONFIG["models"].values():
+            for code, name in CONFIG["models"].items():
+                if name == self.model:
+                    self.model = code
+                    break
+        return True
 
 # ------------------------------------------------
 # Define the Translation Function
@@ -55,6 +77,13 @@ class TranslationRequest(BaseModel):
 # sends the request, and processes the response.
 def translate_text(request: TranslationRequest):
     logging.info(f"Received translation request: {request}")
+    if not request.check_language():
+        logging.warning(f"Invalid language name: {request.target_lang}")
+        return "Error: Invalid language name"
+    
+    if not request.check_model():
+        logging.warning(f"Invalid model name: {request.model}")
+        return "Error: Invalid model name"
 
     # Construct a prompt with clear instructions for the AI model.
     prompt = f"""
@@ -82,14 +111,8 @@ def translate_text(request: TranslationRequest):
         # Create the API client using the API key from the environment variables.
         client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
         # Retrieve the model code from our mapping. If not found, log a warning.
-        model = None
-        for code, name in CONFIG["models"].items():
-            if name == request.model:
-                model = code
-                break
-        if not model:
-            logging.warning(f"Invalid model name: {request.model}")
-            return "Error: Invalid model name"
+        
+        model = request.model
 
         # Prepare the content to be sent to the translation API.
         contents = [

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sheet Translation Tool</title>
+    <link rel="stylesheet" href="style.css"> <script>
+      // --- Keep your existing Javascript ---
+      // function toggleRowLimitInput() { ... }
+      // function populateDropdown(id, items) { ... }
+      // function loadOptions() { ... }
+      // function batchTranslate() { ... }
+      // function clearText() { ... }
+      // window.onload = function () { ... };
+    </script>
+    <style>
+      /* General Reset & Body */
+      * {
+        box-sizing: border-box; /* Include padding and border in element's total width/height */
+        margin: 0;
+        font-size: 0.95em; /* Base font size */
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ECF5FF; /* Gray background */
+        display: flex;
+        justify-content: center; /* Center the container horizontally */
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 5px;
+        min-height: 300pt;
+        overflow-x: hidden;
+        margin: 0;
+      }
+
+      /* Container */
+      .container {
+        max-width: 600px; /* Adjust width to match drawing proportion */
+        display: flex;
+        width: 100%;
+        padding: 15px; /* Add some padding inside container if needed */
+        flex-direction: column;
+      }
+
+      /* Main Title */
+      h2 {
+        text-align: center;
+        font-size: 2em; /* Adjust size */
+        font-weight: bold;
+        margin-top: 0.2em;
+        margin-bottom: 1em;
+      }
+
+      /* Section Headings */
+      .section-heading {
+        font-size: 1.4em;
+        font-weight: bold;
+        font-style: italic;
+        margin-top: 0em;
+        margin-bottom: 0.8em; /* Space below heading */
+        text-align: left;
+      }
+
+      /* Dropdown Containers (Groups of settings) */
+      .dropdown-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8em; /* Space between rows within a section */
+        margin-bottom: 1.5em; /* Space below each section container */
+      }
+
+      /* Individual Setting Rows */
+      .dropdown {
+        display: flex;
+        justify-content: space-between; /* Label left, Input right */
+        align-items: center;
+        width: 100%;
+      }
+
+      /* Labels */
+      label {
+        font-size: 1.3em;
+        text-align: left;
+        font-weight: bold;
+      }
+      
+      #startCol, #endCol {
+        width: 50%; /* Fixed width for inputs/selects on the right */
+        padding: 0.5em;
+        font-size: 1em;
+        border: 1px solid #ccc; /* Black border */
+        border-radius: 16px; /* Sharp corners */
+        background-color: #fff; /* White background */
+        text-align: center; /* Center text as per drawing */
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s, box-shadow 0.3s;
+        -webkit-appearance: none; /* Remove default OS styling */
+        -moz-appearance: none;
+        appearance: none;
+        flex-shrink: 0; /* Prevent input from shrinking */
+      }
+
+      /* Input Fields & Select Dropdowns */
+      select,
+      input[type="text"],
+      input[type="number"] {
+        width: 200px; /* Fixed width for inputs/selects on the right */
+        padding: 0.2em;
+        font-size: 1.2em;
+        border: 1px solid #ccc; /* Black border */
+        border-radius: 16px; /* Sharp corners */
+        background-color: #fff; /* White background */
+        text-align: center; /* Center text as per drawing */
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s, box-shadow 0.3s;
+        flex-shrink: 0; /* Prevent input from shrinking */
+      }
+
+      /* Specific Input Widths */
+      #skipRow,
+      .apply-to-options .row-input {
+        width: 40px; /* Smaller width for number inputs */
+      }
+
+      /* Remove hover/focus effects */
+      select:hover, select:focus,
+      input:hover, input:focus {
+        border-color: #48eaef; /* Keep border black */
+        box-shadow: 0 0 8px rgba(32, 195, 231, 0.6);
+      }
+
+
+      .apply-to-options {
+        /* Add these lines for the separator */
+        border-bottom: 1px solid #000; /* Black line below Apply To row */
+        padding-bottom: 0.8em;      /* Space between content and line */
+        margin-bottom: 0.8em;       /* Space below the line before next section */
+      }
+
+      .apply-to-options .radio-group {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Align radio options to the right */
+        gap: 1.5em; /* Space between "All rows" and "N rows" */
+        /* Make the group take available space */
+        flex-grow: 1;
+        margin-left: auto; /* Push to the right */
+        width: auto; /* Override specific width if inherited */
+      }
+
+      .apply-to-options .option {
+        display: flex;
+        align-items: center;
+        gap: 0.3em; /* Space between radio/input and text */
+        font-weight: normal; /* Normal text for radio labels */
+      }
+      /* Ensure rowLimit input doesn't take full width */
+      .apply-to-options .row-input {
+        order: 0; /* Put input visually before "rows" text */
+        margin-right: 0.3em;
+        font-size: 1em;
+      }
+
+      /* Style for disabled input */
+      input:disabled, select:disabled {
+        background-color: #cccccc; /* Darker gray when disabled */
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      /* Button Container */
+      .button-container {
+        display: flex;
+        justify-content: space-between; /* Space between buttons */
+        align-items: center;
+        margin-top: 1.5em; /* Space above buttons */
+        gap: 1em; /* Ensure some gap if they wrap */
+      }
+
+      /* Buttons */
+      button {
+        padding: 0.6em 1.2em;
+        display: block;
+        margin: 0 auto;
+        padding: 0.5em 1em;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        border: none; /* Black border */
+        border-radius: 12px; /* Sharp corners */
+        background: #1A73E8; /* Default white background (Primary) */
+        color: white; /* Black text */
+        transition: background-color 0.3s, box-shadow 0.3s;
+        flex-grow: 1; /* Let buttons share space */
+        text-align: center;
+      }
+
+      /* Secondary Button Style (Clear) */
+      button.secondary-button {
+        background: #808080; /* Match background */
+        /* Keep border and text color */
+      }
+
+      button:hover, button:focus {
+        background-color: #d8a840;
+        box-shadow: 0 0 8px rgba(20, 147, 211, 0.6);
+      }
+
+      button.secondary-button:hover, button.secondary-button:focus {
+        background-color: #e26262; /* Slightly lighter gray on hover */
+        /* Optional: Slight border change if needed */
+        /* border-color: #333; */
+        outline: none;
+      }
+
+
+      /* Loading Indicator */
+      #loading-indicator {
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center; /* Center spinner */
+        gap: 8px;
+        font-size: 14px;
+        color: #333; /* Black text */
+        margin-top: 8em; /* Space above loading indicator */
+      }
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 3px solid rgba(0, 0, 0, 0.3); /* Lighter black border */
+        border-top-color: black; /* Solid black top border */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h2>TRANSLATION TOOL</h2>
+
+    <h3 class="section-heading">SpreadSheet Setting</h3>
+
+    <div class="dropdown-container spreadsheet-settings"> <div class="dropdown">
+          <label for="startCol">Source col</label> <input id="startCol" placeholder="e.g., A" />
+        </div>
+        <div class="dropdown" id="destination-row"> <label for="endCol">Destination col</label> <input id="endCol" placeholder="e.g., B" />
+        </div>
+        <div class="dropdown">
+          <label for="skipRow">Number of Skipped rows</label> <input type="number" id="skipRow" value="0" min="0" />
+        </div>
+        <div class="dropdown apply-to-options"> <label class="main-label">Apply to</label>
+          <div class="radio-group">
+            <label class="option">
+              <input type="radio" id="rowModeAll" name="rowMode" value="all" onchange="toggleRowLimitInput()" checked />
+              All rows
+            </label>
+            <label class="option">
+              <input type="radio" id="rowModeLimit" name="rowMode" value="limit" onchange="toggleRowLimitInput()" />
+               <input type="number" id="rowLimit" min="1" value="3" class="row-input" />
+              rows
+            </label>
+          </div>
+        </div>
+      </div>
+
+    <h3 class="section-heading">Model Setting</h3>
+
+    <div class="dropdown-container model-settings">
+        <div class="dropdown">
+          <label for="targetLang">Target</label>
+          <select id="targetLang"></select>
+        </div>
+        <div class="dropdown">
+          <label for="modelSelect">Model</label>
+          <select id="modelSelect"></select>
+        </div>
+        <div class="dropdown">
+          <label for="styleSelect">Style</label>
+          <select id="styleSelect"></select>
+        </div>
+      </div>
+
+    <div class="button-container">
+      <button id="translateBtn" onclick="batchTranslate()">Batch Translate</button>
+      <button id="clearBtn" onclick="clearText()" class="secondary-button">Clear</button> </div>
+
+    <div id="loading-indicator" style="display: none;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <script>
+       // --- Keep your existing Javascript, BUT ensure toggleRowLimitInput enables/disables correctly ---
+       function toggleRowLimitInput() {
+           const limitRadio = document.getElementById("rowModeLimit");
+           const rowLimitInput = document.getElementById("rowLimit");
+           // Disable input if 'All rows' is selected, enable otherwise
+           rowLimitInput.disabled = !limitRadio.checked;
+       }
+
+       function populateDropdown(id, items) {
+           const select = document.getElementById(id);
+           select.innerHTML = "";
+           items.forEach(item => {
+               const option = document.createElement("option");
+               option.value = item;
+               option.textContent = item;
+               select.appendChild(option);
+           });
+       }
+
+       function loadOptions() {
+           google.script.run.withSuccessHandler(function(options) {
+               populateDropdown("targetLang", options.languages);
+               populateDropdown("modelSelect", options.models);
+               populateDropdown("styleSelect", options.styles);
+           }).getOptions();
+       }
+
+       function batchTranslate() {
+           // Show loading indicator
+           document.getElementById('loading-indicator').style.display = 'flex';
+
+           const startCol = document.getElementById("startCol").value.toUpperCase();
+           const endCol = document.getElementById("endCol").value.toUpperCase();
+           const skipRow = parseInt(document.getElementById("skipRow").value);
+           const rowModeSelected = document.querySelector('input[name="rowMode"]:checked');
+           const applyAllRows = rowModeSelected ? rowModeSelected.value === "all" : false; // handle null case just in case
+
+           const rowLimit = parseInt(document.getElementById("rowLimit").value) || 0;
+
+           const targetLang = document.getElementById("targetLang").value;
+           const model = document.getElementById("modelSelect").value;
+           const style = document.getElementById("styleSelect").value;
+
+           google.script.run
+             .withSuccessHandler(function() {
+                 // Hide loading indicator on success
+                 document.getElementById('loading-indicator').style.display = 'none';
+                 // Optional: Show success message
+             })
+             .withFailureHandler(function() {
+                 // Hide loading indicator on failure
+                 document.getElementById('loading-indicator').style.display = 'none';
+                 // Optional: Show error message
+             })
+             .translateRangeBatch(
+               startCol, endCol, skipRow, applyAllRows, rowLimit, targetLang, model, style
+             );
+       }
+
+       function clearText() {
+           document.getElementById("startCol").value = "";
+           document.getElementById("endCol").value = "";
+           document.getElementById("skipRow").value = "0";
+           // Reset radio buttons and row limit
+           document.getElementById("rowModeLimit").checked = false;
+           document.getElementById("rowLimit").value = "3";
+           document.getElementById("rowLimit").disabled = true; // Ensure it's enabled
+           // Optionally reset dropdowns if needed
+           // document.getElementById("targetLang").selectedIndex = 0;
+           // document.getElementById("modelSelect").selectedIndex = 0;
+           // document.getElementById("styleSelect").selectedIndex = 0;
+       }
+
+       window.onload = function () {
+           loadOptions(); // Assuming this is handled by google.script.run environment
+           toggleRowLimitInput(); // Set initial state
+       };
+
+  </script>
+</body>
+</html>
