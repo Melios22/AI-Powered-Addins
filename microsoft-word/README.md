@@ -60,8 +60,9 @@ Open the terminal or the debug console to check for any errors.
 
 
 ## 📌 Related Guides
-- **[Google Docs Add-on - Setup Guide](../google/README.md)**
- - **[Main Project README](../README.md)**
+- **[Main Project README](../README.md)**
+- **[Google Docs Add-on - Setup Guide](../google-docs/README.md)**
+- **[Google Sheets Add-on - Setup Guide](../google-sheets/README.md)**
 
 <p align="right">
   <a href="#readme-top">⬆️ Back to top</a>

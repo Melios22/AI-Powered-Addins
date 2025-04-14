@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- Optional external stylesheet; uncomment the next line if you have one -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+      /* ==============================
+         Global Base Styles
+      ============================== */
+      body { 
+          font-family: Arial, sans-serif; 
+          padding: 20px 15px;
+          min-height: 300pt;
+          background-color: #ECF5FF;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-size: 1em; /* Base font size */
+          overflow-x: hidden; /* Prevents horizontal scroll */
+          margin: 0;
+      }
+      
+      h2 { 
+          text-align: center; 
+          font-size: 2em; /* Scales with base font size */
+          font-weight: bold;
+          margin-top: 0.2em;
+          margin-bottom: 0.2em;
+      }
+      
+      /* ==============================
+         Container & Layout Styles
+      ============================== */
+      .container {
+          max-width: 600px; /* Maximum container width */
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+      }
+      
+      .textarea-container {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          margin-top: 1em;
+          margin-bottom: 1em;
+      }
+      
+      .textarea-container p {
+          margin-bottom: 0.5em;
+          font-size: 1.2em; /* Slightly larger text */
+          font-weight: bold;
+          color: #333;
+      }
+      
+      /* Placeholder styling for textarea */
+      textarea::placeholder {
+          font-style: italic;
+          color: #888;
+      }
+      
+      /* ==============================
+         Textarea Input Styles
+      ============================== */
+      textarea { 
+          width: 100%;  
+          padding: 1em;
+          font-size: 1.2em; /* Larger text for readability */
+          border: 2px solid #1A73E8;
+          border-radius: 10px;
+          box-sizing: border-box; /* Include padding/border in width calculation */
+          margin-bottom: 1em;
+          resize: vertical; /* Allow vertical resizing only */
+          overflow-y: auto; /* Enable vertical scrollbar */
+      }
+
+      textarea:focus {
+          outline: none; /* Remove default browser outline */
+          border-color: #1565C0; /* Darker blue on focus */
+          box-shadow: 0 0 5px rgba(21, 101, 192, 0.5); /* Subtle glow effect */
+      }
+      
+      /* Custom Scrollbar Styles for textarea */
+      textarea::-webkit-scrollbar {
+          width: 12px; /* Scrollbar width */
+      }
+      textarea::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+      }
+      textarea::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 10px;
+      }
+      textarea::-webkit-scrollbar-thumb:hover {
+          background: #555;
+      }
+      
+      /* ==============================
+         Dropdown & Select Styles
+      ============================== */
+      .dropdown-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center; /* Center the dropdowns horizontally */
+          gap: 1em; /* Vertical space between dropdown groups */
+          margin-bottom: 1em;
+      }
+      
+      .dropdown {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 1em; /* Space between label and dropdown */
+      }
+      
+      label {
+          font-weight: bold;
+          font-size: 1em; /* Consistent with base font size */
+      }
+      
+      select {
+          width: 200px; /* Fixed width for consistency */
+          padding: 0.5em;
+          font-size: 1em;
+          border: 1px solid #ccc;
+          border-radius: 16px;
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+          transition: border-color 0.3s, box-shadow 0.3s;
+          text-align-last: center; /* Center the selected text */
+      }
+      
+      select:hover, select:focus {
+          border-color: #48eaef;
+          box-shadow: 0 0 8px rgba(32, 195, 231, 0.6);
+      }
+      
+      /* ==============================
+         Button Styling
+      ============================== */
+      .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5em;
+        gap: 1em;
+      }
+      
+      .refresh-button {
+        align-self: center;
+      }
+      
+      button {
+        padding: 0.6em 1.2em;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 12px;
+        background: #1A73E8;
+        color: white;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        flex-grow: 1;
+        text-align: center;
+      }
+
+      /* Secondary button style for "Clear" */
+      button.secondary-button {
+        background: #808080;
+      }
+      
+      button:hover, button:focus {
+        background-color: #d8a840;
+        box-shadow: 0 0 8px rgba(20, 147, 211, 0.6);
+      }
+
+      button.secondary-button:hover, button.secondary-button:focus {
+        background-color: #e26262;
+        outline: none;
+      }
+
+      /* ==============================
+         Loading Indicator
+      ============================== */
+      #loading-indicator {
+          display: flex;
+          align-items: center; /* Center items vertically */
+          gap: 8px;
+          font-size: 14px;
+          color: #333;
+          margin-top: 8px;
+      }
+
+      .spinner {
+          width: 16px;
+          height: 16px;
+          border: 3px solid rgba(0, 0, 0, 0.2);
+          border-top-color: black;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          display: inline-block;
+      }
+
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+    </style>
+    <script>
+      /**
+       * Retrieves the currently selected text from the active Google Docs document.
+       * The server-side function getSelectedText() is called via google.script.run.
+       */
+      function updateSelectedText() {
+          google.script.run.withSuccessHandler(function(text) {
+              document.getElementById("inputText").value = text;
+          }).getSelectedText();
+      }
+
+      /**
+       * Loads dropdown options for target language, model, and style.
+       * Uses the server-side function getOptions() to fetch configuration data.
+       */
+      function loadOptions() {
+          google.script.run.withSuccessHandler(function(options) {
+              // Populate each dropdown with the returned items
+              populateDropdown("targetLang", options.languages);
+              populateDropdown("modelSelect", options.models);
+              populateDropdown("styleSelect", options.styles);
+          }).getOptions();
+      }
+
+      /**
+       * Populates a select element with the provided items.
+       * @param {string} id - The ID of the select element.
+       * @param {Array} items - An array of strings to populate as options.
+       */
+      function populateDropdown(id, items) {
+          var select = document.getElementById(id);
+          select.innerHTML = "";
+          items.forEach(function(item) {
+              var option = document.createElement("option");
+              option.value = item;
+              option.textContent = item;
+              select.appendChild(option);
+          });
+      }
+
+      /**
+       * Calls the server-side function to translate the text.
+       * Retrieves user input and selected options, then displays a success message.
+       */
+      function doTranslate() {
+        // Get the text and dropdown selections
+        var text = document.getElementById("inputText").value;
+        var targetLang = document.getElementById("targetLang").value;
+        var model = document.getElementById("modelSelect").value;
+        var style = document.getElementById("styleSelect").value;
+
+        // Retrieve the loading indicator element
+        var loadingIndicator = document.getElementById("loading-indicator");
+        if (!loadingIndicator) {
+          console.error("❌ ERROR: #loading-indicator NOT FOUND.");
+          return;
+        }
+
+        console.log("Translation started...");
+        // Call the server-side function translateText() using google.script.run
+        google.script.run
+          .withSuccessHandler(function(translation) {
+            console.log("Translation received:", translation);
+            // Show success message in green
+            loadingIndicator.innerHTML = `<span style="color: green;">✅ Translation inserted!</span>`;
+          })
+          .translateText(text, targetLang, model, style);
+      }
+
+      /**
+       * Clears the text area and hides the translation result.
+       */
+      function clearText() {
+        document.getElementById("inputText").value = "";
+        document.getElementById("translation-container").style.display = "none";
+        document.getElementById("loading-indicator").style.display = "none";
+      }
+
+      // On window load, set up dropdown options and update the text area with the currently selected text.
+      window.onload = function() {
+        loadOptions();
+        updateSelectedText();
+      };
+    </script>
+    <title>Local Translation UI</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2>TRANSLATION TOOL</h2>
+      
+      <!-- Textarea Section: for input text selection and manual text entry -->
+      <div class="textarea-container">
+        <textarea id="inputText" rows="6" placeholder="Select or enter text to translate..."></textarea>
+        <!-- Button to refresh selected text from the active document -->
+        <button class="refresh-button" onclick="updateSelectedText()">Refresh Selected Text</button>
+      </div>
+      
+      <!-- Dropdown Section: for selecting translation options -->
+      <div class="dropdown-container">
+        <div class="dropdown">
+          <label for="targetLang">Target</label>
+          <select id="targetLang"></select>
+        </div>
+        <div class="dropdown">
+          <label for="modelSelect">Model</label>
+          <select id="modelSelect"></select>
+        </div>
+        <div class="dropdown">
+          <label for="styleSelect">Style</label>
+          <select id="styleSelect"></select>
+        </div>
+      </div>
+      
+      <!-- Button Section: Translation and Clear actions -->
+      <div class="button-container">
+        <button id="translateBtn" onclick="doTranslate()">Translate</button>
+        <button id="clearBtn" onclick="clearText()" class="secondary-button">Clear</button> 
+      </div>  
+
+      <!-- Loading Indicator Section -->
+      <div id="loading-indicator" style="display: none; margin-top: 10px; font-size: 1.2em;">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </body>
+</html>

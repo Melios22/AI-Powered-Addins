@@ -1,4 +1,4 @@
-# AI Translator Add-ins  
+# AI-Powered-Addins
 <a id="readme-top"></a>
 
 <details>
@@ -16,13 +16,13 @@
 </details>
 
 
-## 🚀 Overview  
-This project provides a **real-time AI translation tool** as an add-in for **Google Docs** and **Microsoft Word**. It allows users to translate selected text directly in their documents while preserving formatting and context.
+## 🚀 Overview  <a id="overview"></a>
+This project provides a **real-time AI-Powered tool** as an add-in for **Google Docs**, **Google Sheets** and **Microsoft Word**. It allows users to translate selected text directly in their documents while preserving formatting and context, or summarize the chosen contents.
 
 
 ## ✨ Key Features <a id="features"></a>
 ✅ **Supports multiple languages**\
-✅ **AI-powered translations** (Google Gemini & more)\
+✅ **AI-powered operations** (Google Gemini & more)\
 ✅ **Custom translation styles** (e.g., formal, casual, technical)\
 ✅ **User-friendly sidebar interface**\
 ✅ **Customizable**
@@ -32,8 +32,8 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
 ### 🔧 Backend Setup  
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/Melios22/AI-Translator-Add-ins.git
-   cd AI-Translator-Add-ins/backend
+   git clone https://github.com/Melios22/AI-Powered-Addins.git
+   cd AI-Powered-Addins/backend/src
    ```
 
 2. **Install dependencies**  
@@ -42,7 +42,7 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
    ```
 
 3. **Configure the API Key**  
-   - Create a `.env` file in the `backend` directory.
+   - Create a `.env` file in the `backend/config` directory.
    - Add your API key to the `.env` file:
     ```env
     GEMINI_API_KEY="your-api-key"
@@ -61,17 +61,28 @@ This project provides a **real-time AI translation tool** as an add-in for **Goo
 
 
 ## 📚 Integration Guides  <a id="integration-guides"></a>
-📌 **[Google Docs Add-on - Setup Guide](./google/README.md)**  
+📌 **[Google Docs Add-on - Setup Guide](./google-docs/README.md)**\
+📌 **[Google Sheets Add-on - Setup Guide](./google-sheets/README.md)**\
 📌 **[Microsoft Word Add-in - Setup Guide](./microsoft/README.md)**  
 
 
 ## 📖 How to use  <a id="how-to-use"></a>
+### Document-based translations
 1. Upon accessing the add-in, users can select text within the document and hit `Refresh Selected Text` to display the selected text in the sidebar.
 2. Users can then choose the desired language, model and style for translation (The language will be automatically recognized).
 3. Click on `Translate` to replace the selected text with the translated text.
     - If users wish to revert the changes, they can simply hit `Ctrl+Z` to undo the translation.
 4. Hit `Clear` to clear the text in the sidebar.
 
+### Spreadsheet-based translations and summarizations
+- User can access these features by calling the custom functions of `GPT_TRANSLATE` and `GPT_SUMMARIZE`.
+- User can also access the add-ons and using on its UI:
+   1. (Summarization only) Entering the prompt of how you want the model to summarize like.
+   2. Choose the columns for the input source and output destination.
+   3. Choose the number of rows to be applied.
+   4. Change the setting arcording to your choice.
+   5. Hit `Batch Translate` or `Batch Summarize` to begin the process.
+   6. Hit `Clear` to clear out the inputted settings.
 
 ## 🎨 Customization  <a id="customization"></a>
 ### Modify the Sidebar UI
@@ -81,7 +92,7 @@ The sidebar is built with HTML, CSS and Javascript. To customize:
 3. Save the changes and reload the add-in.
 
 ### Options
-Within the `backend` folder, you can modify the `data.json` file to chance:
+Within the `backend/config` folder, you can modify the `models.json` and `languages.json` file to change:
 - **Languages**: Add or remove languages from the list.
 - **Models**: Add or remove translation models.
 - **Styles**: Add or remove translation styles.
@@ -91,7 +102,7 @@ Within the `backend` folder, you can modify the `data.json` file to chance:
 - **No response from API?** Ensure FastAPI backend is running  
 - **Errors in translation?** Check API key configuration
 
-For more information, please check the `.log` files in the `backend` directory.
+For more information, please check the `.log` files in the `backend/config` directory.
 
 ## 📝 License  <a id="license"></a>
 This project is licensed under the **MIT License** – Free to use and modify.  

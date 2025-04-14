@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sheet Summarizer Tool</title>
+  <!-- Placeholder script for potential future JS imports -->
+  <script>
+    // Future external JS files can be added here
+  </script>
+  <style>
+    /* === Global Reset & Base Styles === */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-size: 0.95em;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ECF5FF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 5px;
+      min-height: 300pt;
+      overflow-x: hidden;
+    }
+    
+    /* === Container === */
+    .container {
+      max-width: 600px;
+      width: 100%;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* === Headings === */
+    h2 {
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin-top: 0.2em;
+      margin-bottom: 1em;
+    }
+    .section-heading {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 0.8em;
+      text-align: center;
+    }
+    
+    /* === Dropdown and Input Containers === */
+    .dropdown-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8em;
+      margin-bottom: 1.5em;
+    }
+    .dropdown {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    label {
+      font-size: 1.3em;
+      font-weight: bold;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-align: left;
+    }
+    /* Specific styling for start and destination column inputs */
+    #startCol, #endCol {
+      width: 50%;
+      max-width: 200px;
+      padding: 0.5em;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      background-color: #fff;
+      text-align: center;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    /* Common styles for input fields, selects, and textarea */
+    select,
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 200px;
+      padding: 0.2em;
+      font-size: 1.2em;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      background-color: #fff;
+      text-align: center;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+    }
+    /* Input specific widths for number fields */
+    #skipRow,
+    .apply-to-options .row-input {
+      width: 40px;
+    }
+    /* Textarea for prompt */
+    #promptInput {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      max-width: none;
+      text-align: left;
+      min-height: 70px;
+      padding: 0.6em 0.8em;
+      font-size: 1.1em;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      resize: vertical;
+    }
+    /* For prompt row, force block layout */
+    .dropdown.prompt-row {
+      display: block;
+      margin-bottom: 0.8em;
+    }
+    .dropdown.prompt-row label {
+      display: block;
+      font-weight: bold;
+      font-size: 1.3em;
+      margin-bottom: 0.4em;
+      text-align: left;
+      padding: 0;
+    }
+    /* Hover & Focus Effects for inputs and textarea */
+    select:hover, select:focus,
+    input:hover, input:focus,
+    textarea:hover, textarea:focus {
+      border-color: #48eaef;
+      box-shadow: 0 0 8px rgba(32, 195, 231, 0.6);
+    }
+    
+    /* === "Apply to" Options Style === */
+    .apply-to-options {
+      border-bottom: 1px solid #000;
+      padding-bottom: 0.8em;
+      margin-bottom: 0.8em;
+    }
+    .apply-to-options .radio-group {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1.5em;
+      flex-grow: 1;
+      margin-left: auto;
+      width: auto;
+    }
+    .apply-to-options .option {
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+      font-weight: normal;
+    }
+    .apply-to-options .row-input {
+      order: 0;
+      margin-right: 0.3em;
+      font-size: 1em;
+    }
+    
+    /* === Temperature Slider === */
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      width: 50%;
+      justify-content: space-between;
+    }
+    input[type="range"] {
+      width: 80%;
+      height: 8px;
+      cursor: pointer;
+      appearance: none;
+      background: #ddd;
+      border-radius: 4px;
+      outline: none;
+      margin: 0;
+      padding: 0;
+      vertical-align: middle;
+    }
+    input[type="range"]:hover {
+      opacity: 1;
+    }
+    #temperatureValue {
+      font-size: 1.1em;
+      font-weight: bold;
+      min-width: 10%;
+      text-align: center;
+      color: #333;
+    }
+    
+    /* === Disabled Element Styles === */
+    input:disabled, select:disabled, textarea:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    
+    /* === Button Styles === */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5em;
+      gap: 1em;
+    }
+    button {
+      padding: 0.6em 1.2em;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      background: #1A73E8;
+      color: white;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      flex-grow: 1;
+      text-align: center;
+    }
+    button.secondary-button {
+      background: #808080;
+    }
+    button:hover, button:focus {
+      background-color: #d8a840;
+      box-shadow: 0 0 8px rgba(20, 147, 211, 0.6);
+      outline: none;
+    }
+    button.secondary-button:hover, button.secondary-button:focus {
+      background-color: #e26262;
+      box-shadow: 0 0 8px rgba(150, 150, 150, 0.6);
+    }
+    
+    /* === Loading Indicator === */
+    #loading-indicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+      margin-top: 1em;
+      width: 100%;
+      height: 30px;
+    }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(0, 0, 0, 0.3);
+      border-top-color: black;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Main Title -->
+    <h2>AI SUMMARIZER</h2>
+    
+    <!-- Spreadsheet Settings Section -->
+    <h3 class="section-heading">Spreadsheet Setting</h3>
+    <div class="dropdown-container spreadsheet-settings">
+      <!-- Prompt Input (Custom Summarization Prompt) -->
+      <div class="dropdown prompt-row">
+        <label for="promptInput">Prompt</label>
+        <textarea id="promptInput" rows="3" placeholder="E.g.: Summarize me the item lists."></textarea>
+      </div>
+      <!-- Source Column Input -->
+      <div class="dropdown">
+        <label for="startCol">Source col</label>
+        <input id="startCol" placeholder="e.g., A" />
+      </div>
+      <!-- Destination Column Input -->
+      <div class="dropdown" id="destination-row">
+        <label for="endCol">Destination col</label>
+        <input id="endCol" placeholder="e.g., B" />
+      </div>
+      <!-- Number of Header Rows to Skip -->
+      <div class="dropdown">
+        <label for="skipRow">Number of Skipped rows</label>
+        <input type="number" id="skipRow" value="0" min="0" />
+      </div>
+      <!-- "Apply to" Options: All rows or limited rows -->
+      <div class="dropdown apply-to-options">
+        <label class="main-label">Apply to</label>
+        <div class="radio-group">
+          <label class="option">
+            <input type="radio" id="rowModeAll" name="rowMode" value="all" onchange="toggleRowLimitInput()" checked />
+            All rows
+          </label>
+          <label class="option">
+            <input type="radio" id="rowModeLimit" name="rowMode" value="limit" onchange="toggleRowLimitInput()" />
+            <input type="number" id="rowLimit" min="1" value="3" class="row-input" /> rows
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Model Settings Section -->
+    <h3 class="section-heading">Model Setting</h3>
+    <div class="dropdown-container model-settings">
+      <!-- Model Dropdown -->
+      <div class="dropdown">
+        <label for="modelSelect">Model</label>
+        <select id="modelSelect"></select>
+      </div>
+      <!-- Temperature Slider -->
+      <div class="dropdown">
+        <label for="temperatureSlider">Temperature</label>
+        <div class="slider-container">
+          <input type="range" id="temperatureSlider" min="0" max="2" step="0.1" value="1" oninput="updateTemperatureValue(this.value)">
+          <span id="temperatureValue">1.0</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Button Container for Batch Summarization and Clear -->
+    <div class="button-container">
+      <button id="translateBtn" onclick="batchSummarize()">Batch Summarize</button>
+      <button id="clearBtn" onclick="clearText()" class="secondary-button">Clear</button>
+    </div>
+    
+    <!-- Loading Indicator -->
+    <div id="loading-indicator">
+      <div class="spinner"></div> Processing...
+    </div>
+  </div>
+  
+  <script>
+    /**
+     * Enables or disables the row limit input based on the selected radio button.
+     */
+    function toggleRowLimitInput() {
+      const limitRadio = document.getElementById("rowModeLimit");
+      const rowLimitInput = document.getElementById("rowLimit");
+      rowLimitInput.disabled = !limitRadio.checked;
+    }
+    
+    /**
+     * Updates the displayed temperature value to one decimal place.
+     * @param {string|number} val - The new slider value.
+     */
+    function updateTemperatureValue(val) {
+      document.getElementById('temperatureValue').textContent = parseFloat(val).toFixed(1);
+    }
+    
+    /**
+     * Populates a dropdown element with provided items.
+     * @param {string} id - The element ID of the select dropdown.
+     * @param {Array} items - An array of items to add as options.
+     */
+    function populateDropdown(id, items) {
+      const select = document.getElementById(id);
+      if (!select) {
+        console.error("Dropdown element not found:", id);
+        return;
+      }
+      select.innerHTML = "";
+      items.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        select.appendChild(option);
+      });
+    }
+    
+    /**
+     * Loads summarization model options from the server.
+     * Expects the server-side function getOptionsSummarize() to return an object with a 'models' array.
+     */
+    function loadOptions() {
+      google.script.run.withSuccessHandler(function(options) {
+        if (options && options.models) {
+          populateDropdown("modelSelect", options.models);
+        } else {
+          console.error("Failed to load options or models are missing.");
+          populateDropdown("modelSelect", ["Default Model (Error)"]);
+        }
+      }).withFailureHandler(function(error) {
+        console.error("Error calling getOptions:", error);
+        alert("Failed to load model options from the server.");
+      }).getOptionsSummarize();
+    }
+    
+    /**
+     * Gathers user inputs and calls the server-side function summarizeRangeBatch
+     * to perform batch summarization.
+     */
+    function batchSummarize() {
+      // Show loading indicator and disable buttons during processing
+      document.getElementById('loading-indicator').style.display = 'flex';
+      document.getElementById('translateBtn').disabled = true;
+      document.getElementById('clearBtn').disabled = true;
+      
+      // Retrieve and process input values
+      const startCol = document.getElementById("startCol").value.toUpperCase();
+      const endCol = document.getElementById("endCol").value.toUpperCase();
+      const skipRow = parseInt(document.getElementById("skipRow").value) || 0;
+      const promptText = document.getElementById("promptInput").value;
+      const rowModeSelected = document.querySelector('input[name="rowMode"]:checked');
+      const applyAllRows = rowModeSelected ? rowModeSelected.value === "all" : true;
+      
+      let rowLimit = 0;
+      if (!applyAllRows) {
+        const rowLimitInput = document.getElementById("rowLimit");
+        if (!rowLimitInput.disabled) {
+          rowLimit = parseInt(rowLimitInput.value) || 1;
+        }
+      }
+      
+      const model = document.getElementById("modelSelect").value;
+      const temperature = parseFloat(document.getElementById("temperatureSlider").value);
+      
+      // Basic validation for source and destination columns
+      if (!startCol || !endCol) {
+        alert("Please specify both Source and Destination columns.");
+        hideLoadingAndEnableButtons();
+        return;
+      }
+      if (startCol === endCol) {
+        alert("Source and Destination columns cannot be the same.");
+        hideLoadingAndEnableButtons();
+        return;
+      }
+      
+      // Call the server-side batch summarization function using the gathered parameters.
+      google.script.run
+        .withSuccessHandler(function(result) {
+          console.log("Summarization success:", result);
+          hideLoadingAndEnableButtons();
+        })
+        .withFailureHandler(function(error) {
+          console.error("Summarization failed:", error);
+          hideLoadingAndEnableButtons();
+          alert("Summarization failed: " + error.message);
+        })
+        .summarizeRangeBatch(
+          startCol,
+          endCol,
+          skipRow,
+          applyAllRows,
+          rowLimit,
+          model,
+          temperature,
+          promptText
+        );
+    }
+    
+    /**
+     * Hides the loading indicator and re-enables the action buttons.
+     */
+    function hideLoadingAndEnableButtons() {
+      document.getElementById('loading-indicator').style.display = 'none';
+      document.getElementById('translateBtn').disabled = false;
+      document.getElementById('clearBtn').disabled = false;
+    }
+    
+    /**
+     * Clears all input fields and resets controls to their default state.
+     */
+    function clearText() {
+      document.getElementById("startCol").value = "";
+      document.getElementById("endCol").value = "";
+      document.getElementById("skipRow").value = "0";
+      document.getElementById("promptInput").value = "";
+      
+      // Reset radio buttons: default to 'All rows'
+      document.getElementById("rowModeAll").checked = true;
+      document.getElementById("rowModeLimit").checked = false;
+      const rowLimitInput = document.getElementById("rowLimit");
+      rowLimitInput.value = "3";
+      rowLimitInput.disabled = true;
+      
+      // Reset Temperature Slider and update display
+      document.getElementById("temperatureSlider").value = "1";
+      updateTemperatureValue("1");
+      
+      // Optionally reset model dropdown to default index
+      const modelSelect = document.getElementById("modelSelect");
+      if (modelSelect.options.length > 0) {
+        modelSelect.selectedIndex = 0;
+      }
+    }
+    
+    // Initialize options and set control states on window load
+    window.onload = function () {
+      loadOptions();
+      toggleRowLimitInput();
+      updateTemperatureValue(document.getElementById('temperatureSlider').value);
+    };
+  </script>
+</body>
+</html>

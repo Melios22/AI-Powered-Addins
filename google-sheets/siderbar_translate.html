@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sheet Translation Tool</title>
+  <!-- Link to external stylesheet (if any) -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* General Reset & Base Styles */
+    * {
+      box-sizing: border-box; /* Include padding and border in width/height */
+      margin: 0;
+      padding: 0;
+      font-size: 0.95em; /* Base font size */
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ECF5FF; /* Light background color */
+      display: flex;
+      justify-content: center; /* Center content horizontally */
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 5px;
+      min-height: 300pt;
+      overflow-x: hidden;
+    }
+
+    /* Container Styling */
+    .container {
+      max-width: 600px; /* Limit max width */
+      width: 100%;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Main Title Styling */
+    h2 {
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin-top: 0.2em;
+      margin-bottom: 1em;
+    }
+
+    /* Section Heading Styling */
+    .section-heading {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 0.8em;
+      text-align: center;
+    }
+
+    /* Dropdown Container: Group settings */
+    .dropdown-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8em;
+      margin-bottom: 1.5em;
+    }
+
+    /* Individual Setting Rows */
+    .dropdown {
+      display: flex;
+      justify-content: space-between; /* Label on left, input on right */
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Label Styling */
+    label {
+      font-size: 1.3em;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    /* Specific Input Styling for Source and Destination Columns */
+    #startCol,
+    #endCol {
+      width: 50%;
+      padding: 0.5em;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      background-color: #fff;
+      text-align: center;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      flex-shrink: 0;
+    }
+
+    /* Input & Select Dropdown Common Styles */
+    select,
+    input[type="text"],
+    input[type="number"] {
+      width: 200px;
+      padding: 0.2em;
+      font-size: 1.2em;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      background-color: #fff;
+      text-align: center;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+    }
+
+    /* Specific Width for Number Inputs */
+    #skipRow,
+    .apply-to-options .row-input {
+      width: 40px;
+    }
+
+    /* Hover and Focus Effects for Inputs and Dropdowns */
+    select:hover,
+    select:focus,
+    input:hover,
+    input:focus {
+      border-color: #48eaef;
+      box-shadow: 0 0 8px rgba(32, 195, 231, 0.6);
+    }
+
+    /* "Apply To" Options Style (Radio Buttons and Row Limit) */
+    .apply-to-options {
+      border-bottom: 1px solid #000;
+      padding-bottom: 0.8em;
+      margin-bottom: 0.8em;
+    }
+
+    .apply-to-options .radio-group {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1.5em;
+      flex-grow: 1;
+      margin-left: auto;
+    }
+
+    .apply-to-options .option {
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+      font-weight: normal;
+    }
+
+    /* Ensure rowLimit input is sized correctly */
+    .apply-to-options .row-input {
+      order: 0;
+      margin-right: 0.3em;
+      font-size: 1em;
+    }
+
+    /* Disabled Input Style */
+    input:disabled,
+    select:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Button Container */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5em;
+      gap: 1em;
+    }
+
+    /* Button Styling */
+    button {
+      padding: 0.6em 1.2em;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      background: #1A73E8;
+      color: white;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    /* Secondary Button Styling */
+    button.secondary-button {
+      background: #808080;
+    }
+
+    button:hover,
+    button:focus {
+      background-color: #d8a840;
+      box-shadow: 0 0 8px rgba(20, 147, 211, 0.6);
+    }
+
+    button.secondary-button:hover,
+    button.secondary-button:focus {
+      background-color: #e26262;
+      outline: none;
+    }
+
+    /* Loading Indicator Styles */
+    #loading-indicator {
+      display: none; /* Hidden by default */
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #333;
+      margin-top: 8em;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(0, 0, 0, 0.3);
+      border-top-color: black;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Main Title -->
+    <h2>AI TRANSLATOR</h2>
+
+    <!-- Spreadsheet Settings Section -->
+    <h3 class="section-heading">Spreadsheet Setting</h3>
+    <div class="dropdown-container spreadsheet-settings">
+      <!-- Source Column Input -->
+      <div class="dropdown">
+        <label for="startCol">Source col</label>
+        <input id="startCol" placeholder="e.g., A" />
+      </div>
+      <!-- Destination Column Input -->
+      <div class="dropdown" id="destination-row">
+        <label for="endCol">Destination col</label>
+        <input id="endCol" placeholder="e.g., B" />
+      </div>
+      <!-- Number of Header Rows to Skip -->
+      <div class="dropdown">
+        <label for="skipRow">Number of Skipped rows</label>
+        <input type="number" id="skipRow" value="0" min="0" />
+      </div>
+      <!-- Apply to Rows Options -->
+      <div class="dropdown apply-to-options">
+        <label class="main-label">Apply to</label>
+        <div class="radio-group">
+          <!-- Option for applying to all rows -->
+          <label class="option">
+            <input type="radio" id="rowModeAll" name="rowMode" value="all" onchange="toggleRowLimitInput()" checked />
+            All rows
+          </label>
+          <!-- Option for applying to a limited number of rows -->
+          <label class="option">
+            <input type="radio" id="rowModeLimit" name="rowMode" value="limit" onchange="toggleRowLimitInput()" />
+            <input type="number" id="rowLimit" min="1" value="3" class="row-input" />
+            rows
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Settings Section -->
+    <h3 class="section-heading">Model Setting</h3>
+    <div class="dropdown-container model-settings">
+      <!-- Dropdown for Target Language Selection -->
+      <div class="dropdown">
+        <label for="targetLang">Target</label>
+        <select id="targetLang"></select>
+      </div>
+      <!-- Dropdown for Model Selection -->
+      <div class="dropdown">
+        <label for="modelSelect">Model</label>
+        <select id="modelSelect"></select>
+      </div>
+      <!-- Dropdown for Style Selection -->
+      <div class="dropdown">
+        <label for="styleSelect">Style</label>
+        <select id="styleSelect"></select>
+      </div>
+    </div>
+
+    <!-- Button Section for Batch Translation and Clear Actions -->
+    <div class="button-container">
+      <button id="translateBtn" onclick="batchTranslate()">Batch Translate</button>
+      <button id="clearBtn" onclick="clearText()" class="secondary-button">Clear</button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator">
+      <div class="spinner"></div> Processing...
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Enables or disables the row limit input based on the selected radio button.
+     */
+    function toggleRowLimitInput() {
+      const limitRadio = document.getElementById("rowModeLimit");
+      const rowLimitInput = document.getElementById("rowLimit");
+      // Disable row limit input if "All rows" is selected; enable it otherwise
+      rowLimitInput.disabled = !limitRadio.checked;
+    }
+
+    /**
+     * Populates a dropdown select element with given items.
+     * @param {string} id - The ID of the select element.
+     * @param {Array} items - An array of items to populate the dropdown.
+     */
+    function populateDropdown(id, items) {
+      const select = document.getElementById(id);
+      select.innerHTML = "";
+      items.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        select.appendChild(option);
+      });
+    }
+
+    /**
+     * Loads configuration options for the translator settings by calling the server-side function.
+     * Populates the target language, model, and style dropdowns.
+     */
+    function loadOptions() {
+      google.script.run.withSuccessHandler(function(options) {
+        populateDropdown("targetLang", options.languages);
+        populateDropdown("modelSelect", options.models);
+        populateDropdown("styleSelect", options.styles);
+      }).getOptionsTranslate();
+    }
+
+    /**
+     * Initiates a batch translation by gathering all input values and executing the server-side translation.
+     * Shows a loading indicator during the process.
+     */
+    function batchTranslate() {
+      // Display the loading indicator while the batch translation is processing
+      document.getElementById('loading-indicator').style.display = 'flex';
+
+      // Gather user inputs
+      const startCol = document.getElementById("startCol").value.toUpperCase();
+      const endCol = document.getElementById("endCol").value.toUpperCase();
+      const skipRow = parseInt(document.getElementById("skipRow").value);
+      const rowModeSelected = document.querySelector('input[name="rowMode"]:checked');
+      const applyAllRows = rowModeSelected ? rowModeSelected.value === "all" : false;
+      const rowLimit = parseInt(document.getElementById("rowLimit").value) || 0;
+      const targetLang = document.getElementById("targetLang").value;
+      const model = document.getElementById("modelSelect").value;
+      const style = document.getElementById("styleSelect").value;
+
+      // Call the server-side function to process batch translation
+      google.script.run
+        .withSuccessHandler(function() {
+          // Hide loading indicator upon success
+          document.getElementById('loading-indicator').style.display = 'none';
+        })
+        .withFailureHandler(function() {
+          // Hide loading indicator if an error occurs
+          document.getElementById('loading-indicator').style.display = 'none';
+        })
+        .translateRangeBatch(
+          startCol, endCol, skipRow, applyAllRows, rowLimit, targetLang, model, style
+        );
+    }
+
+    /**
+     * Clears the input fields and resets options to their default values.
+     */
+    function clearText() {
+      document.getElementById("startCol").value = "";
+      document.getElementById("endCol").value = "";
+      document.getElementById("skipRow").value = "0";
+      // Reset radio buttons and row limit input
+      document.getElementById("rowModeLimit").checked = false;
+      document.getElementById("rowLimit").value = "3";
+      document.getElementById("rowLimit").disabled = true;
+      // Optionally reset dropdowns if needed by uncommenting below:
+      // document.getElementById("targetLang").selectedIndex = 0;
+      // document.getElementById("modelSelect").selectedIndex = 0;
+      // document.getElementById("styleSelect").selectedIndex = 0;
+    }
+
+    // Initialize the page by loading options and setting the initial state of row limit input.
+    window.onload = function () {
+      loadOptions();
+      toggleRowLimitInput();
+    };
+  </script>
+</body>
+</html>

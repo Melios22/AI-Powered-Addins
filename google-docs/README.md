@@ -23,8 +23,8 @@ var BASE_URL = "https://your-ngrok-url.ngrok.io"; // Change this
 ```
 
 ### 3️⃣ Run the Add-on
-- Back to Google Docs, there will be an option of `AI Translator` on the top menu. 
-- Click on it and then click on `Open Translator` to launch the sidebar.
+- Back to Google Docs, there will be an option of `AI-Powered Tools` on the top menu. 
+- Click on it and then click on `Translator` to launch the sidebar.
 
 *<u>Note</u>:* On the first run, Google will ask for permission to access the Google Docs. Click on `Review Permissions` and then `Allow`.
 
@@ -37,8 +37,9 @@ Open the browser console (`Ctrl+Shift+J` in Chrome) to check for any errors.
 
 
 ## 📌 Related Guides
-- **[Microsoft Word Add-in - Setup Guide](../microsoft/README.md)**
- - **[Main Project README](../README.md)**
+- **[Main Project README](../README.md)**
+- **[Google Sheets Add-on - Setup Guide](../google-sheets/README.md)**
+- **[Microsoft Word Add-in - Setup Guide](../microsoft-word/README.md)**
 
 <p align="right">
   <a href="#readme-top">⬆️ Back to top</a>

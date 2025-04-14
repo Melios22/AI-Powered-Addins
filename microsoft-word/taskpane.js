@@ -1,5 +1,5 @@
 // ✅ Global base URL (update this to your actual API URL)
-const base_url = "http://127.0.0.1:8000"; // Replace with your public FastAPI URL
+var BASE_URL = "http://127.0.0.1:8000";
 
 // Ensure Office.js is ready before running functions
 Office.onReady(function() {
@@ -21,8 +21,8 @@ function updateSelectedText() {
 
 // Load options (languages, models, styles) from FastAPI backend
 function loadOptions() {
-    console.log(`${base_url}/config`);
-    fetch(`${base_url}/config`, {
+    console.log(`${BASE_URL}/translate_config`);
+    fetch(`${BASE_URL}/translate_config`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -68,7 +68,7 @@ function doTranslate() {
 
     console.log(payload);
 
-    fetch(`${base_url}/translate`, { // ✅ Uses global base_url
+    fetch(`${BASE_URL}/translate`, { // ✅ Uses global base_url
         method: "POST",
         headers: {
             "Content-Type": "application/json"
