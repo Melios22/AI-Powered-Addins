@@ -1,4 +1,4 @@
-#  Google Sheets Add-on - Setup Guide
+#  Google Sheets Add-on
 <a id="readme-top"></a>
 
 ## 🚀 Overview
@@ -116,8 +116,8 @@ Open the browser console (`Ctrl+Shift+J` in Chrome) to check for any errors.
 
 ## 📌 Related Guides
 - **[Main Project README](../README.md)**
-- **[Google Docs Add-on - Setup Guide](../google-docs/README.md)**
-- **[Microsoft Word Add-in - Setup Guide](../microsoft-word/README.md)**
+- **[Google Docs Add-on](../google-docs/README.md)**
+- **[Microsoft Word Add-in](../microsoft-word/README.md)**
 
 
 <p align="right">

@@ -60,10 +60,6 @@ This project provides a **real-time AI-Powered tool** as an add-in for **Google 
    ```
 
 
-## 📚 Integration Guides  <a id="integration-guides"></a>
-📌 **[Google Docs Add-on - Setup Guide](./google-docs/README.md)**\
-📌 **[Google Sheets Add-on - Setup Guide](./google-sheets/README.md)**\
-📌 **[Microsoft Word Add-in - Setup Guide](./microsoft/README.md)**  
 
 
 ## 📖 How to use  <a id="how-to-use"></a>
@@ -83,6 +79,13 @@ This project provides a **real-time AI-Powered tool** as an add-in for **Google 
    4. Change the setting arcording to your choice.
    5. Hit `Batch Translate` or `Batch Summarize` to begin the process.
    6. Hit `Clear` to clear out the inputted settings.
+
+
+## 📚 Integration Guides and Detail Manuals  <a id="integration-guides"></a>
+📌 **[Google Docs Add-on](./google-docs/README.md)**\
+📌 **[Google Sheets Add-on](./google-sheets/README.md)**\
+📌 **[Microsoft Word Add-in](./microsoft/README.md)**  
+
 
 ## 🎨 Customization  <a id="customization"></a>
 ### Modify the Sidebar UI

@@ -1,4 +1,4 @@
-#  Microsoft Word Add-in - Setup Guide
+#  Microsoft Word Add-in
 <a id="readme-top"></a>
 
 ## 🚀 Overview
@@ -61,8 +61,8 @@ Open the terminal or the debug console to check for any errors.
 
 ## 📌 Related Guides
 - **[Main Project README](../README.md)**
-- **[Google Docs Add-on - Setup Guide](../google-docs/README.md)**
-- **[Google Sheets Add-on - Setup Guide](../google-sheets/README.md)**
+- **[Google Docs Add-on](../google-docs/README.md)**
+- **[Google Sheets Add-on](../google-sheets/README.md)**
 
 <p align="right">
   <a href="#readme-top">⬆️ Back to top</a>
